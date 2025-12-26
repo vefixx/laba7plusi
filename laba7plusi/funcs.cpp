@@ -36,6 +36,7 @@ void Zadacha1Sort2()
 
     for (int i = 0; i < n - 1; i++) {   // для сортировки достаточно n-1 проходов
         int start = n - 1 - i;
+
         for (int j = 0; j < start; j++) { // т.к. сравниваем с j+1, то чтобы не выйти за границу берем n - 1 - i элементов (start)
             if (array[j] > array[j + 1]) {
                 Swap(array[j], array[j + 1]);
@@ -66,11 +67,13 @@ void Zadacha3Five12()
     int n;
     cout << "Введите размер массива: ";
     cin >> n;
+    cin.ignore();
 
     while (n < 0) {
         cout << "Некорректный размер" << endl;
         cout << "Введите размер массива: ";
         cin >> n;
+        cin.ignore();
     }
 
     vector<int> array(n);
