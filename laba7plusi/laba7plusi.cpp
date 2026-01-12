@@ -15,6 +15,7 @@ int main()
         cout << "0) Выход\n";
         cout << "1) Сортровка простых обменов\n";
         cout << "2) Клиенты\n";
+        cout << "3) Ученики\n";
         cin >> n;
         cin.ignore();
 
@@ -25,6 +26,7 @@ int main()
             Zadacha2ExamTaskC14();
             break;
         case 3:
+            Zadacha3Five12();
             break;
         case 0:
             break;

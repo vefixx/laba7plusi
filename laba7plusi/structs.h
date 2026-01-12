@@ -1,6 +1,8 @@
 ﻿#ifndef STRUCTS_H_
 #define STRUCTS_H_
 
+#include <string>
+
 struct Client {
 	int year;
 	int month;
@@ -14,6 +16,10 @@ struct Result {
 	int duration;
 };
 
+struct Student {
+	std::string surname;
+	int score;
+};
 
 #endif // !STRUCTS_H_
 

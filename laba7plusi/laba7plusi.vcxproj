@@ -129,10 +129,15 @@
   <ItemGroup>
     <ClCompile Include="funcs.cpp" />
     <ClCompile Include="laba7plusi.cpp" />
+    <ClCompile Include="merge_sort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="funcs.h" />
+    <ClInclude Include="merge_sort.h" />
     <ClInclude Include="structs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

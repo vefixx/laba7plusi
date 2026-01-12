@@ -3,6 +3,10 @@
 #include <vector>
 #include "structs.h"
 #include <vector>
+#include <fstream>
+#include <string>
+#include "merge_sort.h"
+#include <iomanip>
 
 void Swap(int& a, int& b) {
     int t = a;
@@ -206,20 +210,85 @@ void Zadacha3Five12()
 {
     using namespace std;
 
-    int n;
-    cout << "Введите размер массива: ";
-    cin >> n;
+    vector<Student> students;
 
-    while (n < 0) {
-        cout << "Некорректный размер" << endl;
-        cout << "Введите размер массива: ";
-        cin >> n;
+    ifstream file("input.txt");
+
+    if (!file.is_open()) {
+        cout << "Файл input.txt не найден" << endl;
+        return;
     }
 
-    vector<int> array(n);
+    string line;
+    while (getline(file, line)) {
+        // Парсим строку, идем до первого пробела. Все что перед пробелом - имя фамилия, а после - балл
+        int space = -1;
 
-    cout << "Введите элементы: " << endl;
-    for (int i = 0; i < n; i++) {
-        cin >> array[i];
+        for (int i = 0; i < line.length(); i++) {
+            if (line[i] == ' ' || line[i] == '\t') {
+                space = i;
+                break;
+            }
+        }
+
+        if (space == -1 || space == line.length() - 1) {
+            cout << "Некорректный формат строки" << endl;
+            continue;
+        }
+
+        string surname = line.substr(0, space);
+        if (surname.length() > 15) {
+            cout << "Строка имеет некорректный формат (длина фамилии > 15)" << endl;
+            continue;
+        }
+
+        // Доходим до первого символа (баллы), чтобы пропустить все пробелы
+        int start = space;
+        while (line[start] == ' ') {
+            start++;
+        }
+
+        int score = 0;
+        for (int i = start; i < line.length(); i++) {
+            if (line[i] >= '0' && line[i] <= '9') {
+                score = score * 10 + (line[i] - '0');
+            }
+            else {
+                cout << "Некорректны формат баллов для строки" << endl;
+                score = -1;
+                break;
+            }
+        }
+
+        if (score == -1) {
+            continue;
+        }
+
+        Student student;
+        student.surname = surname;
+        student.score = score;
+        students.push_back(student);
     }
+
+    file.close();
+
+    cout << "Получено " << students.size() << " учеников" << endl;
+    
+    if (students.size() == 0) {
+        return;
+    }
+
+    MergeSortStudents(students, 0, students.size() - 1);
+
+    // Запись в файл
+    ofstream out_file("output.txt");
+
+    for (const Student& student : students) {
+        out_file << left << setw(15) << student.surname
+            << right << setw(3) << student.score
+            << endl;
+    }
+
+    cout << "Данные отсортированы и записаны в файл output.txt" << endl;
+
 }
