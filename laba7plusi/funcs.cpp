@@ -1,5 +1,7 @@
-#include "funcs.h"
+﻿#include "funcs.h"
 #include <iostream>
+#include <vector>
+#include "structs.h"
 #include <vector>
 
 void Swap(int& a, int& b) {
@@ -13,18 +15,18 @@ void Zadacha1Sort2()
     using namespace std;
 
     int n;
-    cout << "������� ������ �������: ";
+    cout << "Введите размер массива: ";
     cin >> n;
 
     while (n < 0) {
-        cout << "������������ ������" << endl;
-        cout << "������� ������ �������: ";
+        cout << "Некорректный размер" << endl;
+        cout << "Введите размер массива: ";
         cin >> n;
     }
 
     vector<int> array(n);
 
-    cout << "������� ��������: " << endl;
+    cout << "Введите элементы: " << endl;
     for (int i = 0; i < n; i++) {
         cin >> array[i];
     }
@@ -34,9 +36,9 @@ void Zadacha1Sort2()
     }
     cout << endl;
 
-    for (int i = 0; i < n - 1; i++) {   // ��� ���������� ���������� n-1 ��������
+    for (int i = 0; i < n - 1; i++) {   // для сортировки достаточно n-1 проходов
         int start = n - 1 - i;
-        for (int j = 0; j < start; j++) { // �.�. ���������� � j+1, �� ����� �� ����� �� ������� ����� n - 1 - i ��������� (start)
+        for (int j = 0; j < start; j++) { // т.к. сравниваем с j+1, то чтобы не выйти за границу берем n - 1 - i элементов (start)
             if (array[j] > array[j + 1]) {
                 Swap(array[j], array[j + 1]);
             }
@@ -59,23 +61,164 @@ void Zadacha1Sort2()
     cout << endl;
 }
 
+void Zadacha2ExamTaskC14()
+{
+    using namespace std;
+
+    int k, n;
+    cout << "Введите код клиента K: ";
+    cin >> k;
+
+    if (cin.fail() || k < 10 || k > 99) {
+        cout << "Неверный ввод кода" << endl;
+        cin.clear();
+        cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+        return;
+    }
+    cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+
+    cout << "Введите количество клиентов: ";
+    cin >> n;
+
+    if (cin.fail() || n < 0) {
+        cout << "Неверный ввод количества" << endl;
+        cin.clear();
+        cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+        return;
+    }
+    cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+
+    vector<Client> clients;
+    Client client;
+    for (int i = 0; i < n; i++) {
+        while (true) {
+            cout << "Введите данные о клиенте (год месяц код продолжительность): ";
+            cin >> client.year >> client.month >> client.code >> client.duration;
+
+            if (cin.fail() || client.year < 2000 || client.year > 2010
+                || client.month < 1 || client.month > 12
+                || client.code < 10 || client.code > 99
+                || client.duration < 1 || client.duration > 30) {
+                cout << "Неверный ввод" << endl;
+                cin.clear();
+                cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+                continue;
+            }
+            cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+
+            break;
+        }
+
+        clients.push_back(client);
+    }
+
+    // Находим нашего клиента среди списка
+    bool has_client_with_code_k = false;
+    for (const Client& client : clients) {
+        if (client.code == k) {
+            has_client_with_code_k = true;
+            break;
+        }
+    }
+
+    if (!has_client_with_code_k) {
+        cout << "Нет данных" << endl;
+        return;
+    }
+
+    // Собираем массив из уникальных годов, чтобы далее находить по ним мин. продолжительность
+    int years[11];
+    int years_result_count = 0;
+    for (const Client& client : clients) {
+        if (client.code == k) {
+            bool found_this_year = false;
+            for (int year : years) {
+                if (year == client.year) {
+                    found_this_year = true;
+                    break;
+                }
+            }
+
+            if (!found_this_year) {
+                years[years_result_count] = client.year;
+                years_result_count++;
+            }
+        }
+    }
+
+    vector<Result> results;
+    // Находим для каждого такого года месяц с минимальной продолжительностью
+    for (int year : years) {
+        int min_duration_for_this_year = 31;
+        int best_month_number = 0;
+
+        for (const Client& client : clients) {
+            if (client.code == k && client.year == year) {
+                if (client.duration < min_duration_for_this_year) {
+                    min_duration_for_this_year = client.duration;
+                    best_month_number = client.month;
+                }
+                else 
+                    // если таких месяцев несколько, то выбирать 
+                    // месяц с наибольшим номером
+                    if (client.duration == min_duration_for_this_year) {
+                        if (client.month > best_month_number) {
+                            best_month_number = client.month;
+                        }
+                }
+            }
+        }
+
+        if (best_month_number > 0) {
+            Result result;
+            result.year = year;
+            result.month = best_month_number;
+            result.duration = min_duration_for_this_year;
+
+            results.push_back(result);
+        }
+    }
+
+    if (results.size() == 0) {
+        cout << "Нет данных" << endl;
+        return;
+    }
+
+    // Сортируем пузырьком по годам
+    for (int i = 0; i < results.size() - 1; i++) {
+        for (int j = 0; j < results.size() - i - 1; j++) {
+            if (results[j].year > results[j + 1].year) {
+                Result temp = results[j];
+                results[j] = results[j + 1];
+                results[j + 1] = temp;
+            }
+        }
+    }
+
+    for (const Result& result : results) {
+        cout << result.year << " "
+            << result.month << " " <<
+            result.duration << endl;
+    }
+}
+
 void Zadacha3Five12()
 {
     using namespace std;
 
     int n;
-    cout << "������� ������ �������: ";
+    cout << "Введите размер массива: ";
     cin >> n;
 
     while (n < 0) {
-        cout << "������������ ������" << endl;
-        cout << "������� ������ �������: ";
+        cout << "Некорректный размер" << endl;
+        cout << "Введите размер массива: ";
         cin >> n;
     }
 
     vector<int> array(n);
 
-    cout << "������� ��������: " << endl;
+    cout << "Введите элементы: " << endl;
     for (int i = 0; i < n; i++) {
         cin >> array[i];
     }

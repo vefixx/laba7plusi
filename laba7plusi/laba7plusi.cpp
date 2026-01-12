@@ -14,6 +14,7 @@ int main()
         cout << "Введите номер задачи:\n";
         cout << "0) Выход\n";
         cout << "1) Сортровка простых обменов\n";
+        cout << "2) Клиенты\n";
         cin >> n;
         cin.ignore();
 
@@ -22,6 +23,7 @@ int main()
             Zadacha1Sort2();
             break;
         case 2:
+            Zadacha2ExamTaskC14();
             break;
         case 3:
             break;
