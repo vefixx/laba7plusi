@@ -20,7 +20,6 @@ int main()
 
         switch (n) {
         case 1:
-            Zadacha1Sort2();
             break;
         case 2:
             Zadacha2ExamTaskC14();

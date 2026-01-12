@@ -14,5 +14,6 @@ struct Result {
 	int duration;
 };
 
+
 #endif // !STRUCTS_H_
 
